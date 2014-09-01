@@ -5,7 +5,14 @@ from sys import exit
 #def bear_room()
 def num_to_list(num):
     output = []
-    
+    temp_number = num
+
+    while temp_number != 0:
+        num = temp_number % 10
+        output += [num]
+        temp_number //= 10
+
+    return output
 
 #def cthulhu_room()
 def input_int_plz(str):
