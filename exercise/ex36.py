@@ -1,7 +1,7 @@
 import random
 from sys import exit
 
-__DEBUG__ = True
+__DEBUG__ = not True
 
 #def gold_room()
 def is_it_right(choice, number):
@@ -9,67 +9,61 @@ def is_it_right(choice, number):
     # number[5, 6, 3, 2]
     # result[0, B, A, 0]
     
-    result = ['0'] * 4
-    c = choice
-    n = number    
+    if __DEBUG__:
+        #print("Call is_it_right([0, 0, 0, 0], [0, 0, 0, 0])")
+        print("Call is_it_right(%r, %r)" % (choice, number))
+
+    l = len(number)
+    result = [0] * l
+    c = [x for x in choice]
+    n = [x for x in number]
     reply = reply_A(c, n)
-    for x in range(len(n)):
+    for x in range(l):
         if reply[x] == 1:
             result[x] = 'A'
-            n[x] = -1
     
     reply = reply_B(c, n)
-    for x in range(len(n)):
+    for x in range(l):
         if reply[x] == 1:
             result[x] = 'B'
     #
     print("%d A %d B" % (result.count('A'), result.count('B')))
-    if result.count('A') == 4:
+    if result.count('A') == l:
         return True
     else:
         return False
 
 def reply_A(choice, number):
-    reply = [0] * 4
-    c = choice
-    n = number
-    for x in range(len(c)):
-        if c[x] == n[x]:
+    reply = [0] * len(number)
+    for x in range(min(len(choice), len(number))):
+        if choice[x] == number[x]:
             reply[x] = 1
+            number[x] = -1
     if __DEBUG__ == True:
         print()
-        print("reply_A(%r, %r) = %r" % (c, n, reply))
+        print("reply_A(%r, %r) = %r" % (choice, number, reply))
         print()
     return reply
 
 def reply_B(choice, number):
-    reply = [0] * 4
-    c = choice
-    n = number
-    for x in range(len(c)):
-        for y in range(len(c)):
-            if c[x] == n[y]:
+    reply = [0] * len(number)
+    for x in range(min(len(choice), len(number))):
+        for y in range(min(len(choice), len(number))):
+            if choice[x] == number[y]:
                 reply[x] = 1
-                n[y] = -1
+                number[y] = -2
     if __DEBUG__ == True:
         print()
-        print("reply_B(%r, %r) = %r" % (c, n, reply))
+        print("reply_B(%r, %r) = %r" % (choice, number, reply))
         print()
     return reply
 
 
 #def bear_room()
 def num_to_list(num):
-    output = []
-    temp_number = num
-
-    while temp_number != 0:
-        num = (temp_number % 10)
-        output += [num]
-        temp_number //= 10
+    output = list(num)
+    output = [int(x, 10) for x in output]
 #        print("num => %d\ntemp_number => %d" % (num, temp_number))
-
-    output = output[::-1]
 
     return output
 
@@ -79,7 +73,7 @@ def input_int_plz(str):
         print(str)
         output = input(">>> ")
         if output.isdigit() == True:
-            return int(output, 10)
+            return output
         else:
             print("It's not a number :( \n")
 
@@ -110,7 +104,7 @@ def main():
     
     while try_again == True:
         if set_level == True:
-            level = input_int_plz("choose how many numbers you want ?")
+            level = int(input_int_plz("choose how many numbers you want ?"), 10)
 
         rnd_number = get_random_number(level)
         guess = False
@@ -128,6 +122,7 @@ def main():
                     try_again = set_level = True
                 else:
                     print("Good bye ._./~")
+                    try_again = False
         #End while -guess over
     #End while -game over
     exit()
